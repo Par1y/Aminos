@@ -1,0 +1,57 @@
+identity:
+  author: "par1y"
+  name: "chromedriver"
+  label:
+    en_US: "chromedriver"
+    zh_Hans: "chromedriver"
+    pt_BR: "chromedriver"
+    ja_JP: "chromedriver"
+  description:
+    en_US: "Allow agent to control a browser via chromedriver."
+    zh_Hans: "允许 agent 使用 chromedriver 控制浏览器。"
+    pt_BR: "Permite que o agente controle um navegador via chromedriver."
+    ja_JP: "エージェントがchromedriverを介してブラウザを制御できるようにします。"
+  icon: "icon.svg"
+
+credentials_for_provider:
+    chromedriver_uri:
+        type: text-input
+        required: true
+        label:
+            en_US: Chromedriver URI
+            zh_Hans: Chromedriver URI
+            pt_BR: URI do Chromedriver
+            ja_JP: Chromedriver URI
+        placeholder:
+            en_US: Please input your Chromedriver URI
+            zh_Hans: 请输入你的 Chromedriver 地址
+            pt_BR: Por favor, insira o URI do seu Chromedriver
+            ja_JP: Chromedriver の URI を入力してください
+        help:
+            en_US: For example `http://127.0.0.1:4444`
+            zh_Hans: 例如 `http://127.0.0.1:4444`
+            pt_BR: Por exemplo `http://127.0.0.1:4444`
+            ja_JP: 例えば `http://127.0.0.1:4444`
+    chromedriver_options:
+        type: text-input
+        required: false
+        label:
+            en_US: Chromedriver options
+            zh_Hans: Chromedriver 额外选项
+            pt_BR: Opções do Chromedriver
+            ja_JP: Chromedriver のオプション
+        placeholder:
+            en_US: Input your Chromedriver options if needed
+            zh_Hans: 若有需要，输入你的 Chromedriver 额外选项
+            pt_BR: Insira as opções do Chromedriver, se necessário
+            ja_JP: 必要に応じてChromedriverのオプションを入力してください
+        help:
+            en_US: For example `binary_location = "chrome-linux64/chrome",extensions = ["cat-catch", "dog-catch"]`
+            zh_Hans: 例如 `binary_location = "chrome-linux64/chrome",extensions = ["cat-catch", "dog-catch"]`
+            pt_BR: Por exemplo `binary_location = "chrome-linux64/chrome",extensions = ["cat-catch", "dog-catch"]`
+            ja_JP: 例えば `binary_location = "chrome-linux64/chrome",extensions = ["cat-catch", "dog-catch"]`
+tools:
+  - tools/chromedriver.yaml
+extra:
+  python:
+    source: provider/chromedriver.py

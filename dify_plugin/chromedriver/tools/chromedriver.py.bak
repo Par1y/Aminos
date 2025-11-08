@@ -1,0 +1,102 @@
+import ast
+import base64
+import json
+from collections.abc import Generator
+from typing import Any
+from selenium import webdriver
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.chromium.options import ChromiumOptions
+
+from dify_plugin import Tool
+from dify_plugin.entities.tool import ToolInvokeMessage
+
+class ChromedriverTool(Tool):
+    def parse_options(self, options_str: str) -> ChromiumOptions:
+        """
+        解析 Chromedriver 参数, vibe
+        """
+        options = ChromiumOptions()
+        if not options_str:
+            return options
+
+        try:
+            # a string like `key1=value1, key2=value2` is not a valid python expression
+            # so we need to wrap it in a dict-like structure
+            # and then parse it
+            # but `ast.literal_eval` can't parse `binary_location = "chrome-linux64/chrome"`
+            # so we use `ast.parse` to parse it as a module
+            # and then iterate over the body to find assignments
+            tree = ast.parse(f"dict({options_str})")
+            for keyword in tree.body[0].value.keywords:
+                option_name = keyword.arg
+                option_value = ast.literal_eval(keyword.value)
+                if hasattr(options, option_name):
+                    setattr(options, option_name, option_value)
+                # handle special cases
+                elif option_name == "extensions":
+                    for ext in option_value:
+                        options.add_extension(ext)
+                elif option_name == "experimental_options":
+                    for key, value in option_value.items():
+                        options.add_experimental_option(key, value)
+
+        except (SyntaxError, ValueError):
+            return ChromiumOptions()
+        
+        return options
+
+    def connect_chrome(self, uri: str, options: str) -> webdriver:
+        """
+        连接Chromedriver
+        """
+        chrome_options = self.parse_options(options)
+        driver = webdriver.Remote(command_executor=uri, options=chrome_options)
+        return driver
+    
+    def execute(self, driver: WebDriver, command: str) -> str | bytes:
+        """
+        执行 CDP 命令
+        """
+        try:
+            cmd_json = json.loads(command)
+        except json.JSONDecodeError as e:
+            return f"invalid json format: {e}"
+
+        if 'cmd' not in cmd_json or not isinstance(cmd_json['cmd'], str):
+            return "'cmd' key is missing or not a string"
+
+        cmd = cmd_json["cmd"]
+        args = cmd_json.get("args", {})  # Safely get args, default to {}
+
+        try:
+            # Use execute_cdp_cmd for Chrome DevTools Protocol commands
+            result = driver.execute_cdp_cmd(cmd, args)
+
+            # Special handling for screenshot command to return binary data
+            if cmd == "Page.captureScreenshot" and 'data' in result:
+                return base64.b64decode(result['data'])
+
+            # For other commands, serialize the result dictionary to a JSON string
+            if isinstance(result, (dict, list)):
+                return json.dumps(result, indent=2, ensure_ascii=False)
+            
+            # Fallback for any other data types
+            return str(result)
+
+        except Exception as e:
+            # Provide detailed error message
+            return f"Command '{cmd}' execution failed: {e}"
+
+    def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
+        options_str = self.runtime.credentials.get("chromedriver_options")
+        uri = self.runtime.credentials.get("chromedriver_uri")
+
+        driver = self.connect_chrome(uri=uri, options=options_str)
+        result = self.execute(driver=driver, command=tool_parameters.get("command"))
+
+        if isinstance(result, str):
+            yield self.create_text_message(result)
+        elif isinstance(result, bytes):
+            yield self.create_blob_message(blob=result, meta={"mime_type": "image/png"})
+        else:
+            yield self.create_text_message("Nothing output.")
