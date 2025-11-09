@@ -1,0 +1,314 @@
+app:
+  description: Easy surfing with agent.
+  icon: 🔍
+  icon_background: '#D1E9FF'
+  mode: advanced-chat
+  name: Aminos
+  use_icon_as_answer_icon: false
+dependencies: []
+kind: app
+version: 0.4.0
+workflow:
+  conversation_variables:
+  - description: images
+    id: 81eb57d8-ef07-4fa4-bc97-59d468e3bb83
+    name: imgs
+    selector:
+    - conversation
+    - imgs
+    value:
+    - type: screenshot
+    value_type: array[object]
+  - description: gained information through searching
+    id: f50d49e5-383b-479d-97ef-fe6cab542655
+    name: info
+    selector:
+    - conversation
+    - info
+    value: ''
+    value_type: string
+  - description: array of tab unique names
+    id: f7447a3b-b74d-4e3b-bcc8-3e2bf6244ddf
+    name: tab_list
+    selector:
+    - conversation
+    - tab_list
+    value: []
+    value_type: array[string]
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInLoop: false
+        sourceType: start
+        targetType: agent
+      id: 1739229221219-source-1762070313584-target
+      source: '1739229221219'
+      sourceHandle: source
+      target: '1762070313584'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: agent
+        targetType: code
+      id: 1762070313584-source-1762666651552-target
+      source: '1762070313584'
+      sourceHandle: source
+      target: '1762666651552'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: code
+        targetType: answer
+      id: 1762666651552-source-answer-target
+      source: '1762666651552'
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: Start
+        type: start
+        variables: []
+      height: 52
+      id: '1739229221219'
+      position:
+        x: 322.9214425408801
+        y: 0
+      positionAbsolute:
+        x: 322.9214425408801
+        y: 0
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        answer: '{{#1762070313584.files#}}{{#1762666651552.final_answer#}}'
+        desc: ''
+        selected: false
+        title: 回复
+        type: answer
+        variables: []
+      height: 122
+      id: answer
+      position:
+        x: 1247.5881836260698
+        y: 0
+      positionAbsolute:
+        x: 1247.5881836260698
+        y: 0
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        agent_parameters:
+          instruction:
+            type: constant
+            value: 'You are a search assistant.You should help user to search whatever
+              they want, to achieve this, you control a browser through chromedriver
+              tool for the user. If you run into troble or don''t know what to do
+              next, ask the user to  take control.
+
+              Split whole task into sdp calls, do one step and one command at a time,
+              then choose what to do depends on TOOL RESULTS.Use tool to get page
+              information instead of making up your bullshit. Please often check browser
+              status to get a better understanding, be aware that you are using the
+              same browser with user, and try to reuse running browser by creating
+              new tabs instead of new windows.While using CDP, call it no matter how
+              many times if needed.
+
+              DO NOT WRITE ANY CODE TO WAIT FOR LOADING.NO MAKING UP URI.USER CAN
+              DIRECT SEE YOUR CONTROLLING TAB, SO NO SCREENSHOT.MUST FOLLOW CDP COMMAND
+              RULE.'
+          maximum_easytool_retries:
+            type: constant
+            value: 5
+          maximum_iterations:
+            type: constant
+            value: 15
+          model:
+            type: constant
+            value:
+              completion_params: {}
+              mode: chat
+              model: doubao-seed-1-6-250615
+              model_type: llm
+              provider: langgenius/volcengine_maas/volcengine_maas
+              type: model-selector
+          query:
+            type: constant
+            value: '{{#sys.query#}}'
+          tools:
+            type: constant
+            value:
+            - enabled: true
+              extra:
+                description: 允许 agent 使用 chromedriver 控制浏览器。
+              parameters:
+                command:
+                  auto: 1
+                  value: null
+              provider_name: e4e61964-6dce-4c4c-b2a6-203b652fe51b/chromedriver/chromedriver
+              provider_show_name: e4e61964-6dce-4c4c-b2a6-203b652fe51b/chromedriver/chromedriver
+              schemas:
+              - auto_generate: null
+                default: null
+                form: llm
+                human_description:
+                  en_US: command send to chromedriver to execute.
+                  ja_JP: chromedriver に送信して実行するコマンド。
+                  pt_BR: Comando enviado ao chromedriver para execução.
+                  zh_Hans: 发送给 chromedriver 执行的命令。
+                label:
+                  en_US: CDP command
+                  ja_JP: CDP コマンド
+                  pt_BR: Comando CDP
+                  zh_Hans: CDP 命令
+                llm_description: 'send the cdp command to chromedriver for execution.
+                  The command should follow `Chrome Devtools Protocol` format, contain
+                  command and arguments, wrapped in json string. Example: `{"cmd":"Page.captureScreenshot","args":{"format":
+                  "jpeg"}}`'
+                max: null
+                min: null
+                name: command
+                options: []
+                placeholder: null
+                precision: null
+                required: true
+                scope: null
+                template: null
+                type: string
+              settings: {}
+              tool_description: 允许 agent 使用 chromedriver 控制浏览器。
+              tool_label: chromedriver
+              tool_name: chromedriver
+              type: builtin
+        agent_strategy_label: EnhanceFunctionCalling
+        agent_strategy_name: enhancing_function_agent
+        agent_strategy_provider_name: allenyzx/enhancing_function_agent/enhancing_function_agent
+        memory:
+          query_prompt_template: '{{#sys.query#}}
+
+
+            {{#sys.files#}}'
+          window:
+            enabled: true
+            size: 3
+        meta:
+          minimum_dify_version: null
+          version: 0.0.2
+        output_schema: {}
+        plugin_unique_identifier: allenyzx/enhancing_function_agent:0.0.2@bdbcf7d9d7b307aece84c5b810286bc975be3cd713324bd642b5d6f26496c169
+        selected: false
+        title: Agent
+        tool_node_version: '2'
+        type: agent
+      height: 196
+      id: '1762070313584'
+      position:
+        x: 626.265480598161
+        y: 0
+      positionAbsolute:
+        x: 626.265480598161
+        y: 0
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        code: "import re\n\ndef main(text: str):\n    think_blocks = re.findall(r'<think>(.*?)</think>',\
+          \ text, re.DOTALL)\n\n    final_answer = \"\"\n    last_think_end = text.rfind('</think>')\n\
+          \    if last_think_end != -1:\n        final_answer = text[last_think_end\
+          \ + len('</think>'):].strip()\n    else:\n        final_answer = text.strip()\n\
+          \    \n    return {\n        \"think_blocks\": [block.strip() for block\
+          \ in think_blocks],\n        \"final_answer\": final_answer\n    }\n"
+        code_language: python3
+        outputs:
+          final_answer:
+            children: null
+            type: string
+          think_blocks:
+            children: null
+            type: array[string]
+        selected: false
+        title: 代码执行
+        type: code
+        variables:
+        - value_selector:
+          - '1762070313584'
+          - text
+          value_type: string
+          variable: text
+      height: 52
+      id: '1762666651552'
+      position:
+        x: 956.5264807306478
+        y: 0
+      positionAbsolute:
+        x: 956.5264807306478
+        y: 0
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    viewport:
+      x: -162.68186533674282
+      y: 294.43763273933575
+      zoom: 0.7371346086455411
+  rag_pipeline_variables: []
