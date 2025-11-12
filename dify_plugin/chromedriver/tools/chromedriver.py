@@ -134,6 +134,8 @@ class ChromedriverTool(Tool):
         把 Options 字符串变成真正的 Options
         """
         options = ChromiumOptions()
+        # 入机不用看图片
+        options.page_load_strategy = 'eager'
         if not options_str:
             return options
         try:
@@ -141,14 +143,14 @@ class ChromedriverTool(Tool):
             for keyword in tree.body[0].value.keywords:
                 option_name = keyword.arg
                 option_value = ast.literal_eval(keyword.value)
-                if hasattr(options, option_name):
-                    setattr(options, option_name, option_value)
-                elif option_name == "extensions":
+                if option_name == "extensions":
                     for ext in option_value:
                         options.add_extension(ext)
                 elif option_name == "experimental_options":
                     for key, value in option_value.items():
                         options.add_experimental_option(key, value)
+                elif hasattr(options, option_name):
+                    setattr(options, option_name, option_value)
         except (SyntaxError, ValueError):
             for arg in options_str.split():
                 options.add_argument(arg)

@@ -1,10 +1,10 @@
 app:
-  description: Easy surfing with agent.
+  description: AI enhanced surfing experience.
   icon: 🔍
   icon_background: '#D1E9FF'
   mode: advanced-chat
   name: Aminos
-  use_icon_as_answer_icon: false
+  use_icon_as_answer_icon: true
 dependencies: []
 kind: app
 version: 0.4.0
@@ -149,7 +149,7 @@ workflow:
       positionAbsolute:
         x: 1247.5881836260698
         y: 0
-      selected: true
+      selected: false
       sourcePosition: right
       targetPosition: left
       type: custom
@@ -158,36 +158,38 @@ workflow:
         agent_parameters:
           instruction:
             type: constant
-            value: 'You are a search assistant.You should help user to search whatever
-              they want, to achieve this, you control a browser through chromedriver
-              tool for the user. If you run into troble or don''t know what to do
-              next, ask the user to  take control.
-
-              Split whole task into sdp calls, do one step and one command at a time,
-              then choose what to do depends on TOOL RESULTS.Use tool to get page
-              information instead of making up your bullshit. Please often check browser
-              status to get a better understanding, be aware that you are using the
-              same browser with user, and try to reuse running browser by creating
-              new tabs instead of new windows.While using CDP, call it no matter how
-              many times if needed.
-
-              DO NOT WRITE ANY CODE TO WAIT FOR LOADING.NO MAKING UP URI.USER CAN
-              DIRECT SEE YOUR CONTROLLING TAB, SO NO SCREENSHOT.MUST FOLLOW CDP COMMAND
-              RULE.'
+            value: "You are a search assistant. You should actively help users search\
+              \ for whatever they want. To achieve this, you control a browser through\
+              \ the chromedriver tool for the user. Strengthen your understanding\
+              \ of the user's intent and be more proactive in invoking tools (not\
+              \ limited to just using search engines; enhance the depth of tool utilization).\
+              \ If you run into trouble or don't know what to do next, ask the user\
+              \ to take control.\nSplit the whole task into sdp calls. Do one step\
+              \ and execute one command at a time, then decide what to do based on\
+              \ TOOL RESULTS. Use tools to obtain page information instead of fabricating\
+              \ baseless content. Regularly check the browser status to gain a better\
+              \ understanding. Keep in mind that you are using the same browser as\
+              \ the user. Leave useful tabs for the user and try to reuse the running\
+              \ browser by creating new tabs instead of new windows. While using CDP,\
+              \ call it as many times as needed.\nDO NOT WRITE ANY CODE TO WAIT FOR\
+              \ LOADING. NO MAKING UP URI. The user can directly see the tab you are\
+              \ controlling, so no screenshots are required. \ncommand like \"{\\\"\
+              cmd\\\":\\\"Target.activateTarget\\\",\\\"args\\\":{\\\"targetId\\\"\
+              :\\\"4B6C0B5369450E8954AE863F6DB5B814\\\"}}\""
           maximum_easytool_retries:
             type: constant
             value: 5
           maximum_iterations:
             type: constant
-            value: 15
+            value: 16
           model:
             type: constant
             value:
               completion_params: {}
               mode: chat
-              model: doubao-seed-1-6-250615
+              model: gemini-2.5-flash
               model_type: llm
-              provider: langgenius/volcengine_maas/volcengine_maas
+              provider: langgenius/openai_api_compatible/openai_api_compatible
               type: model-selector
           query:
             type: constant
@@ -240,14 +242,6 @@ workflow:
         agent_strategy_label: EnhanceFunctionCalling
         agent_strategy_name: enhancing_function_agent
         agent_strategy_provider_name: allenyzx/enhancing_function_agent/enhancing_function_agent
-        memory:
-          query_prompt_template: '{{#sys.query#}}
-
-
-            {{#sys.files#}}'
-          window:
-            enabled: true
-            size: 3
         meta:
           minimum_dify_version: null
           version: 0.0.2
@@ -260,12 +254,12 @@ workflow:
       height: 196
       id: '1762070313584'
       position:
-        x: 626.265480598161
+        x: 636.9028858121497
         y: 0
       positionAbsolute:
-        x: 626.265480598161
+        x: 636.9028858121497
         y: 0
-      selected: false
+      selected: true
       sourcePosition: right
       targetPosition: left
       type: custom
@@ -308,7 +302,7 @@ workflow:
       type: custom
       width: 242
     viewport:
-      x: -162.68186533674282
-      y: 294.43763273933575
-      zoom: 0.7371346086455411
+      x: -1249.7327714022813
+      y: 394.4341120519022
+      zoom: 1.2141948843950454
   rag_pipeline_variables: []

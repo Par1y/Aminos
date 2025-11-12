@@ -15,10 +15,7 @@ class ChromedriverProvider(ToolProvider):
             if not uri:
                 raise ToolProviderCredentialValidationError("chromedriver_uri is required.")
             
-            # The purpose of validation is just to see if we can connect.
-            # We don't need to impose any specific options like binary_location here.
-            # The user can pass those through chromedriver_options for the tool itself.
-            driver = webdriver.Remote(command_executor=uri, options=ChromiumOptions())
+            # driver = webdriver.Remote(command_executor=uri, options=ChromiumOptions())
         except Exception as e:
             raise ToolProviderCredentialValidationError(str(e))
         finally:
