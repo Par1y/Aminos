@@ -158,24 +158,26 @@ workflow:
         agent_parameters:
           instruction:
             type: constant
-            value: "You are a search assistant. You should actively help users search\
-              \ for whatever they want. To achieve this, you control a browser through\
-              \ the chromedriver tool for the user. Strengthen your understanding\
-              \ of the user's intent and be more proactive in invoking tools (not\
-              \ limited to just using search engines; enhance the depth of tool utilization).\
-              \ If you run into trouble or don't know what to do next, ask the user\
-              \ to take control.\nSplit the whole task into sdp calls. Do one step\
-              \ and execute one command at a time, then decide what to do based on\
-              \ TOOL RESULTS. Use tools to obtain page information instead of fabricating\
-              \ baseless content. Regularly check the browser status to gain a better\
-              \ understanding. Keep in mind that you are using the same browser as\
-              \ the user. Leave useful tabs for the user and try to reuse the running\
-              \ browser by creating new tabs instead of new windows. While using CDP,\
-              \ call it as many times as needed.\nDO NOT WRITE ANY CODE TO WAIT FOR\
-              \ LOADING. NO MAKING UP URI. The user can directly see the tab you are\
-              \ controlling, so no screenshots are required. \ncommand like \"{\\\"\
-              cmd\\\":\\\"Target.activateTarget\\\",\\\"args\\\":{\\\"targetId\\\"\
-              :\\\"4B6C0B5369450E8954AE863F6DB5B814\\\"}}\""
+            value: "You are a browser assistant. You should actively help users use\
+              \ the browser to do whatever they want. To achieve this, you control\
+              \ a browser through the chromedriver tool for the user. Strengthen your\
+              \ understanding of the user's intent and be more proactive in invoking\
+              \ tools (NOT limited to just using search engines; enhance the depth\
+              \ of tool utilization; DO MORE). If you run into trouble or don't know\
+              \ what to do next, ask the user to take control. Prefer duckduckgo rather\
+              \ than baidu.\nSplit the whole task into sdp calls. Do one step and\
+              \ execute one command at a time, then decide what to do based on TOOL\
+              \ RESULTS. Use tools to obtain page information instead of fabricating\
+              \ baseless content. Regularly get browser info(Target.getTargets) to\
+              \ gain a better understanding. Keep in mind that you are using the same\
+              \ browser as the user. Leave useful tabs for the user and try to reuse\
+              \ the running browser by creating new tabs instead of new windows, remember\
+              \ to attach to created tab. While using CDP, call it as many times as\
+              \ needed.\nDO NOT WRITE ANY CODE TO WAIT FOR LOADING. NO MAKING UP URI.\
+              \ The user can directly see the tab you are controlling, so no screenshots\
+              \ are required. \ncommand like \"{\\\"cmd\\\":\\\"Target.activateTarget\\\
+              \",\\\"args\\\":{\\\"targetId\\\":\\\"4B6C0B5369450E8954AE863F6DB5B814\\\
+              \"}}\""
           maximum_easytool_retries:
             type: constant
             value: 5
@@ -187,7 +189,7 @@ workflow:
             value:
               completion_params: {}
               mode: chat
-              model: gemini-2.5-flash
+              model: gemini-2.5-flash-nothinking
               model_type: llm
               provider: langgenius/openai_api_compatible/openai_api_compatible
               type: model-selector
@@ -242,6 +244,14 @@ workflow:
         agent_strategy_label: EnhanceFunctionCalling
         agent_strategy_name: enhancing_function_agent
         agent_strategy_provider_name: allenyzx/enhancing_function_agent/enhancing_function_agent
+        memory:
+          query_prompt_template: '{{#sys.query#}}
+
+
+            {{#sys.files#}}'
+          window:
+            enabled: true
+            size: 3
         meta:
           minimum_dify_version: null
           version: 0.0.2
@@ -254,10 +264,10 @@ workflow:
       height: 196
       id: '1762070313584'
       position:
-        x: 636.9028858121497
+        x: 644.5758407016933
         y: 0
       positionAbsolute:
-        x: 636.9028858121497
+        x: 644.5758407016933
         y: 0
       selected: true
       sourcePosition: right
@@ -302,7 +312,7 @@ workflow:
       type: custom
       width: 242
     viewport:
-      x: -1249.7327714022813
-      y: 394.4341120519022
-      zoom: 1.2141948843950454
+      x: -468.8277141709914
+      y: 280.66611374307774
+      zoom: 1.0281138266560625
   rag_pipeline_variables: []

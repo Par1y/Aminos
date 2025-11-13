@@ -27,7 +27,7 @@ parameters:
       zh_Hans: "发送给 chromedriver 执行的命令。"
       pt_BR: "Comando enviado ao chromedriver para execução."
       ja_JP: "chromedriver に送信して実行するコマンド。"
-    llm_description: 'send the cdp command to chromedriver for execution. The command should follow `Chrome Devtools Protocol` format, contain command and arguments, wrapped in json string. Example: `{"cmd":"Page.captureScreenshot","args":{"format": "jpeg"}}`'
+    llm_description: 'This tool allow you to send cdp command to chromedriver for execution. The command should follow `Chrome Devtools Protocol` format, contain command and arguments, wrapped in json string. Example: `{"cmd":"Page.captureScreenshot","args":{"format": "jpeg"}}`'
     form: llm
 
 extra:
