@@ -208,3 +208,6 @@ __marimo__/
 frp/
 chrome-linux64/
 chromedriver-linux64/
+
+# key
+**/*.pem
